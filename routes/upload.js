@@ -1,6 +1,7 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load();
 }
+const moment = require('moment');
 
 const
       express = require('express')
@@ -47,11 +48,15 @@ router.post('/', uploadStrategy, (req, res) => {
             return;
         }
 
+        const currentTimeStamp = moment().valueOf();
+
         const newItem = {
             user_id: req.body.user_id,
             path: `${process.env.AZURE_STORAGE_URI_SUFFIX}/${containerName}/${blobName}`,
             views: 0,
-            likes: 0
+            likes: 0,
+            created_at: currentTimeStamp,
+            updated_at: currentTimeStamp
           };
 
         createNoonReel(newItem);
