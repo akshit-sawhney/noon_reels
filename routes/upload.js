@@ -17,6 +17,8 @@ const
     , containerName = 'images'
 ;
 
+const { createNoonReel } = require('../controllers/noon_reels');
+
 const handleError = (err, res) => {
     res.status(500);
     res.render('error', { error: err });
@@ -44,6 +46,15 @@ router.post('/', uploadStrategy, (req, res) => {
             handleError(err);
             return;
         }
+
+        const newItem = {
+            user_id: req.body.user_id,
+            path: `${process.env.AZURE_STORAGE_URI_SUFFIX}/${containerName}/${blobName}`,
+            views: 0,
+            likes: 0
+          };
+
+        createNoonReel(newItem);
 
         res.render('success', { 
             message: 'File uploaded to Azure.' 
