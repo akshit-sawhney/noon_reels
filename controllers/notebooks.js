@@ -21,4 +21,23 @@ async function createNotebook(request) {
     return creationResponse;
 }
 
-module.exports = { createNotebook };
+async function getNoteBooksByUserId(userId) {
+    const querySpec = {
+      query: `SELECT * FROM ${process.env.AZURE_COSMOS_NOTEBOOKS_CONTAINER_ID} nb WHERE  nb.user_id = @userId`,
+      parameters: [
+        {
+          name: "@userId",
+          value: userId
+        }
+      ]
+    };
+    try {
+      const {resources: result} = await container.items.query(querySpec).fetchAll();
+      return {resources: result}
+    } catch (error) {
+      console.log('here: ', error);
+      throw new Error('Error in getting data from cosmos');
+    }
+  }
+
+module.exports = { createNotebook, getNoteBooksByUserId };
