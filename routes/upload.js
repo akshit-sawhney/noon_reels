@@ -28,6 +28,7 @@ const getBlobName = originalName => {
 };
 
 router.post('/', uploadStrategy, (req, res) => {
+    console.log(req.body)
 
     const
           blobName = getBlobName(req.file.originalname)
