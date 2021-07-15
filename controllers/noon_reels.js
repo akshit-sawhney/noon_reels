@@ -1,6 +1,7 @@
 const CosmosClient = require("@azure/cosmos").CosmosClient;
 const config = require("../core/cosmos_configs");
 const dbContext = require("../model/cosmos/core");
+const uuid = require('uuid');
 
 const { endpoint, key, databaseId, containerId } = config;
 
@@ -10,13 +11,15 @@ const database = client.database(databaseId);
 const container = database.container(containerId);
 
 async function createNoonReel(item) {
-container.items.create(item)
+  return new Promise((resolve, reject) => {
+    container.items.create(item)
       .then(res => {
-       // Do nothing
+       resolve(res);
       })
       .catch(err => {
-        // Do nothing
+        reject(err);
       });
+  });
 }
 
 async function getReels(userId) {
@@ -38,4 +41,26 @@ async function getReels(userId) {
   }
 }
 
-module.exports = { createNoonReel, getReels };
+async function getReelsByIds(idList) {
+  console.log('here: ', JSON.stringify(idList));
+  const idsListString = JSON.stringify(idList);
+  s3 = idsListString.substring(1,idsListString.length-1);
+  const querySpec = {
+    query: `SELECT * FROM ${process.env.AZURE_COSMOS_CONTAINER_ID} nr WHERE  nr.id IN (${s3})`,
+    parameters: [
+      {
+        name: "@s3",
+        value: s3
+      }
+    ]
+  };
+  try {
+    const {resources: result} = await container.items.query(querySpec).fetchAll();
+    return {resources: result}
+  } catch (error) {
+    console.log('error; ', error);
+    throw new Error('Error in getting data from cosmos');
+  }
+}
+
+module.exports = { createNoonReel, getReels, getReelsByIds };

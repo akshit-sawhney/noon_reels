@@ -20,6 +20,8 @@ const
 
 const { createNoonReel } = require('../controllers/noon_reels');
 
+const { createHashTagEntry } = require('../controllers/noon_hash_tags');
+
 const handleError = (err, res) => {
     res.status(500);
     res.render('error', { error: err });
@@ -39,8 +41,6 @@ router.post('/', uploadStrategy, (req, res) => {
         , streamLength = req.file.buffer.length
     ;
 
-    console.log('name is: ', blobName, containerName);
-
     blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, (err, response) => {
 
         if(err) {
@@ -59,7 +59,21 @@ router.post('/', uploadStrategy, (req, res) => {
             updated_at: currentTimeStamp
           };
 
-        createNoonReel(newItem);
+          createNoonReel(newItem)
+            .then(createNoonReelResponse => {
+                if (createNoonReelResponse && createNoonReelResponse.resource && createNoonReelResponse.resource.id) {
+                    const hastagItem = {
+                    hashtag: req.body.hash_tag,
+                    post_id: createNoonReelResponse.resource.id,
+                    created_at: currentTimeStamp,
+                    updated_at: currentTimeStamp
+                  };
+                createHashTagEntry(hastagItem);
+                }
+            })
+            .catch(err => {
+
+            });
 
         res.render('success', { 
             message: 'File uploaded to Azure.' 
