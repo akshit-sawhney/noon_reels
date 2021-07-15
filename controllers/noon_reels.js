@@ -10,13 +10,15 @@ const database = client.database(databaseId);
 const container = database.container(containerId);
 
 async function createNoonReel(item) {
-container.items.create(item)
+  return new Promise((resolve, reject) => {
+    container.items.create(item)
       .then(res => {
-       // Do nothing
+       resolve(res);
       })
       .catch(err => {
-        // Do nothing
+        reject(err);
       });
+  });
 }
 
 async function getReels(userId) {
