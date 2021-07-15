@@ -4,6 +4,7 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+var cors = require('cors');
 
 const index = require('./routes/index');
 const upload = require('./routes/upload');
@@ -12,6 +13,7 @@ const list_hash_tags = require('./routes/list_hash_tags');
 const notebooks = require('./routes/notebooks');
 
 const app = express();
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
