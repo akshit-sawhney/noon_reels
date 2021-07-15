@@ -22,7 +22,7 @@ container.items.create(item)
 async function getReels(userId) {
 
   const querySpec = {
-    query: `SELECT * FROM ${process.env.AZURE_COSMOS_CONTAINER_ID} n WHERE  n.user_id = @userId`,
+    query: `SELECT * FROM ${process.env.AZURE_COSMOS_CONTAINER_ID} nr WHERE  nr.user_id = @userId`,
     parameters: [
       {
         name: "@userId",
