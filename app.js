@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 
 const index = require('./routes/index');
 const upload = require('./routes/upload');
+const list = require('./routes/list');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/upload', upload);
+app.use('/list', list);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

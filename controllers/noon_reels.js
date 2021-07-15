@@ -17,7 +17,25 @@ container.items.create(item)
       .catch(err => {
         // Do nothing
       });
-
 }
 
-module.exports = { createNoonReel };
+async function getReels(userId) {
+
+  const querySpec = {
+    query: `SELECT * FROM ${process.env.AZURE_COSMOS_CONTAINER_ID} n WHERE  n.user_id = @userId`,
+    parameters: [
+      {
+        name: "@userId",
+        value: userId
+      }
+    ]
+  };
+  try {
+    const {resources: result} = await container.items.query(querySpec).fetchAll();
+    return {resources: result}
+  } catch (error) {
+    throw new Error('Error in getting data from cosmos');
+  }
+}
+
+module.exports = { createNoonReel, getReels };
