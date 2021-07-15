@@ -9,6 +9,7 @@ const index = require('./routes/index');
 const upload = require('./routes/upload');
 const list = require('./routes/list');
 const list_hash_tags = require('./routes/list_hash_tags');
+const notebooks = require('./routes/notebooks');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/', index);
 app.use('/upload', upload);
 app.use('/list', list);
 app.use('/list_hash_tag', list_hash_tags);
+app.use('/notebooks', notebooks);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
