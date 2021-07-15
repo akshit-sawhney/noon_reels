@@ -1,0 +1,30 @@
+<h1>Noon Reels</h1>
+
+<h2>Upload Video</h2>
+<form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+  <h2>Select a video to upload:</h2>
+  <div class="upload-container"><input id="file-picker" type="file" name="image"></div>
+  <div><input type="submit" value="Upload Video"></div>
+</form>
+
+<p id="message">{{message}}</p>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    const message = document.getElementById('message');
+    const picker = document.getElementById('file-picker');
+
+    document.getElementById('upload-form').addEventListener('submit', (e) => {
+
+      message.innerText = '';
+
+      if(!picker.files.length) {
+        message.innerText = 'Please select an image to upload.';
+        e.preventDefault();
+        return false;
+      }
+    });
+
+  });
+</script>
