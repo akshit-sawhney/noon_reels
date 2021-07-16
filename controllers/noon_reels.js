@@ -2,6 +2,7 @@ const CosmosClient = require("@azure/cosmos").CosmosClient;
 const config = require("../core/cosmos_configs");
 const dbContext = require("../model/cosmos/core");
 const uuid = require('uuid');
+const moment = require('moment');
 
 const { endpoint, key, databaseId, containerId } = config;
 
@@ -43,6 +44,7 @@ async function getReels(userId) {
 
 
 async function updateLikesByReelId(reelId, likesValue) {
+  const currentTimeStamp = moment().valueOf();
   const querySpec = {
     query: `SELECT * FROM ${process.env.AZURE_COSMOS_CONTAINER_ID} nr WHERE  nr.id = @reelId`,
     parameters: [
@@ -58,6 +60,7 @@ async function updateLikesByReelId(reelId, likesValue) {
       const currentRow = Object.assign({}, response.resources[0]);
       const { id, user_id } = currentRow;
       currentRow.likes = likesValue;
+      currentRow.updated_at = currentTimeStamp;
       const { resource: updatedItem } = await container
         .item(id, user_id)
         .replace(currentRow);
