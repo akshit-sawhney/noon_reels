@@ -39,4 +39,23 @@ async function createUserReel(request) {
     }
 }
 
-module.exports = { createUserReel };
+async function getReelsByNotebookId(notebookId) {
+
+    const querySpec = {
+      query: `SELECT * FROM ${process.env.AZURE_COSMOS_USER_NOTES_CONTAINER_ID} ur WHERE  ur.notebook_id = @notebookId`,
+      parameters: [
+        {
+          name: "@notebookId",
+          value: notebookId
+        }
+      ]
+    };
+    try {
+      const {resources: result} = await container.items.query(querySpec).fetchAll();
+      return {resources: result}
+    } catch (error) {
+      throw new Error('Error in getting data from cosmos');
+    }
+  }
+
+module.exports = { createUserReel, getReelsByNotebookId };
