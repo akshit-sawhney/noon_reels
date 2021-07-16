@@ -41,6 +41,34 @@ async function getReels(userId) {
   }
 }
 
+
+async function updateLikesByReelId(reelId, likesValue) {
+  const querySpec = {
+    query: `SELECT * FROM ${process.env.AZURE_COSMOS_CONTAINER_ID} nr WHERE  nr.id = @reelId`,
+    parameters: [
+      {
+        name: "@reelId",
+        value: reelId
+      }
+    ]
+  };
+  try {
+    const response = await container.items.query(querySpec).fetchAll();
+    if (response.resources && response.resources.length) {
+      const currentRow = Object.assign({}, response.resources[0]);
+      const { id, user_id } = currentRow;
+      currentRow.likes = likesValue;
+      const { resource: updatedItem } = await container
+        .item(id, user_id)
+        .replace(currentRow);
+        return { resource: updatedItem };
+    }
+  } catch (error) {
+    console.log('error; ', error);
+    throw new Error('Error in getting data from cosmos');
+  }
+}
+
 async function getReelsByIds(idList) {
   console.log('here: ', JSON.stringify(idList));
   const idsListString = JSON.stringify(idList);
@@ -63,4 +91,4 @@ async function getReelsByIds(idList) {
   }
 }
 
-module.exports = { createNoonReel, getReels, getReelsByIds };
+module.exports = { createNoonReel, getReels, getReelsByIds, updateLikesByReelId };
