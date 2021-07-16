@@ -12,6 +12,7 @@ const list = require('./routes/list');
 const list_hash_tags = require('./routes/list_hash_tags');
 const notebooks = require('./routes/notebooks');
 const userReels = require('./routes/user_reels');
+const likes = require('./routes/likes');
 
 const app = express();
 app.use(cors());
@@ -33,6 +34,7 @@ app.use('/list', list);
 app.use('/list_hash_tag', list_hash_tags);
 app.use('/notebooks', notebooks);
 app.use('/user_reels', userReels);
+app.use('/likes', likes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
