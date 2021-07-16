@@ -4,14 +4,17 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+var cors = require('cors');
 
 const index = require('./routes/index');
 const upload = require('./routes/upload');
 const list = require('./routes/list');
 const list_hash_tags = require('./routes/list_hash_tags');
 const notebooks = require('./routes/notebooks');
+const userReels = require('./routes/user_reels');
 
 const app = express();
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,6 +32,7 @@ app.use('/upload', upload);
 app.use('/list', list);
 app.use('/list_hash_tag', list_hash_tags);
 app.use('/notebooks', notebooks);
+app.use('/user_reels', userReels);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
